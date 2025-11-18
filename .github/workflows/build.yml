@@ -1,0 +1,47 @@
+name: Docker Example
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run tests
+      - name: Run tests
+        run: npm test
+
+      # Step 5: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: remypxl
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 6: Build Docker image
+      - name: Build Docker image
+        run: docker build -t remypxl/DEMO_Github_action:latest .
+
+      # Step 7: Push Docker image to Docker Hub
+      - name: Push Docker image
+        run: docker push remypxl/DEMO_Github_action:latest
